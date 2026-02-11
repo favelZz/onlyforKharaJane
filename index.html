@@ -10,23 +10,23 @@
         :root {
             --accent: #a855f7; 
             --accent-light: #d8b4fe;
-            --glass: rgba(255, 255, 255, 0.9);
+            --glass: rgba(255, 255, 255, 0.95);
             --shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
         }
 
         body {
             margin: 0;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             background: radial-gradient(circle at center, #4c1d95, #1e1b4b, #0f172a);
             font-family: 'Poppins', sans-serif;
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
         .petal-container {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -41,16 +41,19 @@
             border-radius: 30px;
             box-shadow: var(--shadow);
             padding: 40px;
-            width: 400px;
+            width: 90%;
+            max-width: 400px;
             text-align: center;
             z-index: 10;
             position: relative;
-            animation: breathe 4s ease-in-out infinite;
+            margin: 20px;
         }
+
+        #invite-card { animation: breathe 4s ease-in-out infinite; }
 
         h1 {
             font-family: 'Dancing Script', cursive;
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             color: #6b21a8;
             margin: 0 0 10px 0;
         }
@@ -70,74 +73,80 @@
         .btn-container {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
             margin-top: 25px;
+            flex-wrap: wrap;
         }
 
         button {
-            padding: 12px 30px;
+            padding: 12px 25px;
             border: none;
             border-radius: 50px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
         }
 
-        .yes-btn {
+        .yes-btn, .photo-btn {
             background: #7e22ce;
             color: white;
             box-shadow: 0 4px 15px rgba(126, 34, 206, 0.4);
         }
 
+        .photo-btn { margin-top: 15px; width: 100%; background: #9333ea; }
+
         .no-btn {
             background: rgba(255, 255, 255, 0.1);
             color: #ffffff;
             border: 2px solid #ffffff;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
             text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-            z-index: 999;
         }
 
-        /* Video Container Styles */
+        /* Video/Photo Section */
         .video-frame {
             width: 100%;
-            height: auto;
-            max-height: 300px;
-            margin: 20px 0;
             border-radius: 20px;
             overflow: hidden;
             border: 4px solid white;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            background: #000; /* Fallback color */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            background: #000;
         }
 
-        video {
-            width: 100%;
-            height: 100%;
-            display: block;
-            object-fit: cover;
+        video { width: 100%; display: block; }
+
+        /* Photobooth Grid */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.8s ease-out;
         }
+
+        .photo-grid.show { max-height: 1000px; }
+
+        .polaroid {
+            background: white;
+            padding: 8px 8px 20px 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transform: rotate(var(--r));
+            transition: transform 0.3s;
+        }
+
+        .polaroid:hover { transform: rotate(0deg) scale(1.05); z-index: 20; }
+
+        .polaroid img { width: 100%; height: 120px; object-fit: cover; border: 1px solid #eee; }
 
         .hidden { display: none; }
 
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
-
+        @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
         .fade-in { animation: fadeIn 1s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .petal {
-            position: absolute;
-            background: linear-gradient(to bottom, #ffffff, #f3e8ff);
-            border-radius: 100% 0 100% 0;
-            opacity: 0.8;
-        }
+        .petal { position: absolute; background: white; border-radius: 100% 0 100% 0; opacity: 0.8; }
     </style>
 </head>
 <body>
@@ -153,7 +162,6 @@
             <p>⏰ <b>Time:</b> 8:00 PM</p>
             <p>📍 <b>Where:</b> Say yes first :)</p>
             <p>🪻 <b>With:</b> Mark Chan Favila</p>
-            
         </div>
 
         <p style="font-weight: 600;">Will you be my Valentine?</p>
@@ -165,17 +173,27 @@
     </div>
 
     <div id="success-card" class="card hidden">
-        <h1>Wonderful! ✨</h1>
+        <h1>I'ts a date then! ✨</h1>
         
         <div class="video-frame">
             <video id="celebration-video" loop playsinline>
-                <source src="vid.mp4" type="video/mp4">
-                Your browser does not support the video tag.
+                <source src="ril.mp4" type="video/mp4">
             </video>
         </div>
 
-        <p>You've made this February truly special love. <br>Cant wait see you Ali!</p>
-        <div style="font-size: 40px; margin-top: 10px;">🪻💜🥂</div>
+        <button class="photo-btn" onclick="togglePhotos()">View Our Photobooths 📸</button>
+
+        <div id="photo-grid" class="photo-grid">
+            <div class="polaroid" style="--r: -3deg"><img src="1.png" alt="Photo 1"></div>
+            <div class="polaroid" style="--r: 2deg"><img src="2.png" alt="Photo 2"></div>
+            <div class="polaroid" style="--r: -2deg"><img src="3.png" alt="Photo 3"></div>
+            <div class="polaroid" style="--r: 4deg"><img src="4.png" alt="Photo 4"></div>
+            <div class="polaroid" style="--r: -4deg"><img src="5.png" alt="Photo 5"></div>
+            <div class="polaroid" style="--r: 1deg"><img src="6.png" alt="Photo 6"></div>
+        </div>
+
+        <p style="margin-top: 20px;">You've made this February truly special Ali. <br> Can't wait to see you!</p>
+        <div style="font-size: 30px;">❤️❤️❤️</div>
     </div>
 
     <script>
@@ -192,19 +210,21 @@
             document.getElementById('invite-card').classList.add('hidden');
             const success = document.getElementById('success-card');
             const video = document.getElementById('celebration-video');
-            
             success.classList.remove('hidden');
             success.classList.add('fade-in');
-            
-            // Start video playback
-            video.play().catch(error => {
-                console.log("Autoplay was prevented. User may need to interact with the frame.");
-            });
-
+            video.play().catch(e => console.log("Autoplay blocked"));
             burstPetals();
         }
 
-        // Petal Logic
+        function togglePhotos() {
+            const grid = document.getElementById('photo-grid');
+            grid.classList.toggle('show');
+            // Scroll to view photos if they go off screen
+            if(grid.classList.contains('show')) {
+                setTimeout(() => { grid.scrollIntoView({ behavior: 'smooth' }); }, 300);
+            }
+        }
+
         function createPetal() {
             const container = document.getElementById('petal-container');
             const petal = document.createElement('div');
@@ -215,22 +235,16 @@
             petal.style.left = Math.random() * 100 + 'vw';
             petal.style.top = '-50px';
             container.appendChild(petal);
-
             const duration = Math.random() * 4 + 4;
             petal.animate([
                 { transform: `translateY(0) rotate(0deg)`, opacity: 0.8 },
                 { transform: `translateY(110vh) rotate(360deg)`, opacity: 0 }
             ], { duration: duration * 1000 });
-
             setTimeout(() => petal.remove(), duration * 1000);
         }
 
         setInterval(createPetal, 350);
-
-        function burstPetals() {
-            for(let i=0; i<40; i++) setTimeout(createPetal, i * 50);
-        }
+        function burstPetals() { for(let i=0; i<40; i++) setTimeout(createPetal, i * 50); }
     </script>
 </body>
 </html>
-
